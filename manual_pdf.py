@@ -4,6 +4,30 @@ from typing import Union
 from typing import List
 from tqdm import tqdm
 
+def getmycities(s):
+    top_20_german_freight_cities = [
+    "Hamburg",
+    "Bremerhaven",
+    "Duisburg",
+    "Wilhelmshaven",
+    "Rostock",
+    "Lübeck",
+    "Emden",
+    "Kiel",
+    "Mannheim",
+    "Frankfurt am Main",
+    "Hannover",
+    "Münster",
+    "Stuttgart",
+    "München",
+    "Köln",
+    "Dortmund",
+    "Dresden",
+    "Magdeburg",
+    "Nürnberg",
+    "Regensburg"
+]
+    return [s +" "+ i for i in top_20_german_freight_cities]
 def timecheck(txt,main_page_types):
     # for i, line in enumerate(txt.splitlines()):
     #     print(line)
@@ -153,22 +177,30 @@ Seite = [ "Seite 1", "Seite"]
 Seite_str = [ "Seite 1", "1"]
 Address = ["Rechnungsadresse","Address","addresse"]
 Lieferschein = ["Lieferschein-Nr.", "Lieferschein"]
-
+strasse = ["strasse","Str","Str.","str.","StraBe"]
+telefon = ["Tel. :","Tel.:","Tel.: +49"]
 Datum = ["Datum:", "Datum","Lieferdatum"]
 Datum_str = [r'\b\d{2}.\d{2}.\d{4}\b',
                 r'\b\d{2}.\d{2}.\d{2}\b',
                 r'\b\d{2}/\d{2}/\d{4}\b',
                 r'\b\d{2}/\d{2}/\d{2}\b']
-
+Zip_code = getmycities(r'\b\d{2}.\d{2}.\d{4}\b')
+cities = getmycities("")
 Time = ["Time", "Time: "]
-Time_str = [r'\b\d{2}:\d{2}:\d{2}\b']
+Time_str = [r'\b\d{4}\b']
 main_page_types = {
+                    "Time": [["Time"], Time_str,True],
                    "Datum": [Datum, Datum_str,False],
-                   "Seite": [Seite,Seite,True],
+                    "Lieferschein":[Lieferschein,Lieferschein,True],
+                    "Seite": [Seite,Seite,True],
                     "Bestell": [Bestell,Bestell,True],
-                "Lieferschein":[Lieferschein,Lieferschein,True],
-                   "Time": [["Time"], Time_str,True],
-                   "Address": [Address,Address,True]
+                    "Address": [Address,Address,True],
+                    "Zip_code":[Zip_code,Zip_code,True],
+                    "Cities":[cities,cities,True],
+                    "Telefone":[telefon,telefon,True],
+                    "Rechnungsnummer": [Address,Address,True],
+                    "strasse": [strasse,strasse,True],
+                    "Address": [Address,Address,True],                    
                    }
 
 if __name__ == "__main__":
@@ -178,9 +210,10 @@ if __name__ == "__main__":
     totest = manual_4training_readPDF(pdftouse)
 
     print("The results using '%s' is: "%pdftouse)
-    print(totest)
+    # print(totest[0])
+    # print(totest[1])
 
-    # print("The score wrt to Raul's list: {:.2f} %".format(compare_Raul()))
+    print("The score wrt to Raul's list: {:.2f} %".format(compare_Raul()))
 
     # for tt in pdf_files:
     #     totest = manual_readPDF(tt)
