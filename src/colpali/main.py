@@ -15,15 +15,15 @@ from transformers.models.qwen2_vl import Qwen2VLProcessor
 from colpaliRAG import ColQwen2ForRAG
 
 
-def read_zip(args:dict):
-    with ZipFile(args['base_path'], 'r') as zf:
-        with zf.open(args['file_name'], 'r') as f:
+def read_zip(base_path:str, file_name:str):
+    with ZipFile(base_path, 'r') as zf:
+        with zf.open(file_name, 'r') as f:
             images = convert_from_bytes(f.read())
     return images
 
 
-def read_folder(args:dict):
-    images = convert_from_path(args['base_path'] + args['file_name'])
+def read_folder(base_path:str, file_name:str):
+    images = convert_from_path(base_path + file_name)
     return images
 
 
@@ -50,7 +50,7 @@ def query_processor(query:str):
                 },
                 {
                     "type": "text",
-                    "text": f"Answer the following question using the input image: {query}. Return NA if no answer is found.",
+                    "text": f"Answer the following question using the input image: {query}",
                 },
             ],
         }
@@ -68,12 +68,6 @@ if __name__ == "__main__":
     cfg_path = './src/colpali/cfg.json'
     with open(cfg_path, 'r') as f:
         cfg = json.load(f)
-    
-    # Get images
-    if cfg['data']['base_path'].endswith('zip'):
-        images = read_zip(cfg['data'])
-    else:
-        images = read_folder(cfg['data'])
     
     # Get the LoRA config from the pretrained retrieval model
     model_name = cfg['model']['model_name']
@@ -100,32 +94,39 @@ if __name__ == "__main__":
         ),
     )
 
-    # Preprocess the inputs
-    output_dict = {}
-    for id_img, img in enumerate(images):
-        output_dict[id_img] = {}
-        for query in tqdm(cfg['model']['text_queries']):
-            inputs_generation = processor(
-                text=[query_processor(query)],
-                images=[img],
-                padding=True,
-                return_tensors="pt",
-            ).to(device)
+    for file_name in cfg['data']['file_name']:
+        # Get images
+        if cfg['data']['base_path'].endswith('zip'):
+            images = read_zip(cfg['data']['base_path'], file_name)
+        else:
+            images = read_folder(cfg['data']['base_path'], file_name)
+        
+        # Preprocess the inputs
+        output_dict = {}
+        for id_img, img in enumerate(images):
+            output_dict[id_img] = {}
+            for query in tqdm(cfg['model']['text_queries']):
+                inputs_generation = processor(
+                    text=[query_processor(query)],
+                    images=[img],
+                    padding=True,
+                    return_tensors="pt",
+                ).to(device)
 
-            # Generate the RAG response
-            model.enable_generation()
-            output_ids = model.generate(**inputs_generation, max_new_tokens=128)
+                # Generate the RAG response
+                model.enable_generation()
+                output_ids = model.generate(**inputs_generation, max_new_tokens=128)
 
-            # Ensure that only the newly generated token IDs are retained from output_ids
-            generated_ids = [output_ids[len(input_ids) :] for input_ids, output_ids in zip(inputs_generation.input_ids, output_ids)]
+                # Ensure that only the newly generated token IDs are retained from output_ids
+                generated_ids = [output_ids[len(input_ids) :] for input_ids, output_ids in zip(inputs_generation.input_ids, output_ids)]
 
-            # Decode the RAG response
-            output_text = processor.batch_decode(
-                generated_ids,
-                skip_special_tokens=True,
-                clean_up_tokenization_spaces=True,
-            )
-            output_dict[id_img][query] = output_text
-    
-    with open('./src/colpali/results.json', 'wb') as f:
-        json.dump(output_dict, f)
+                # Decode the RAG response
+                output_text = processor.batch_decode(
+                    generated_ids,
+                    skip_special_tokens=True,
+                    clean_up_tokenization_spaces=True,
+                )
+                output_dict[id_img][query] = output_text
+        
+        with open(f"./src/colpali/results_{file_name.split('/')[-1]}.json", 'w') as f:
+            json.dump(output_dict, f)
