@@ -1,15 +1,16 @@
 {
     "data": {
-        "base_path": "./data/BECONEX_challenge_materials_samples.zip",
+        "base_path": "./data/BECONEX_challenge_materials_samples/",
         "file_name": [
-            "BECONEX_challenge_materials_samples/batch_1_2017_2018.pdf",
-            "BECONEX_challenge_materials_samples/batch_2_2019_2020.pdf",
-            "BECONEX_challenge_materials_samples/batch_3_2021.pdf",
-            "BECONEX_challenge_materials_samples/batch_4_2022_1.pdf",
-            "BECONEX_challenge_materials_samples/batch_5_2022_2.pdf",
-            "BECONEX_challenge_materials_samples/batch_6_2023_1.pdf",
-            "BECONEX_challenge_materials_samples/batch_7_2023_2024.pdf"
-        ]
+            "batch_1_2017_2018",
+            "batch_2_2019_2020",
+            "batch_3_2021",
+            "batch_4_2022_1",
+            "batch_5_2022_2",
+            "batch_6_2023_1",
+            "batch_7_2023_2024"
+        ],
+        "records_file": "SAP_data.json"
     },
     "model": {
         "model_name": "vidore/colqwen2-v1.0",
@@ -32,5 +33,8 @@
         "vendor": [4, 5, 6, 7],
         "address": [8, 9],
         "order": [10, 11]
+    },
+    "results": {
+        "save_path": "./results/"
     }
 }

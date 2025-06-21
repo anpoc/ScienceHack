@@ -75,15 +75,9 @@ def get_mode_or_first(list_str:list, exclude:str=''):
         return list_str if len(list_str) > 1 else list_str[0]
 
 
-if __name__ == "__main__":
-    os.chdir('/home/hackaton2025/ScienceHack/')
-
-    cfg_path = './src/colpali/cfg.json'
-    with open(cfg_path, 'r') as f:
-        cfg = json.load(f)
-    
+def postprocess(cfg:dict):
     for file_name in cfg['data']['file_name']:
-        with open(f"./src/colpali/results_{file_name.split('/')[-1]}.json", 'r') as f:
+        with open(f"{cfg['results']['save_path']}tmp_results_{file_name.split('/')[-1]}.json", 'r') as f:
             outputs = json.load(f)
         output_dict = {}
         for k, v in outputs.items():
@@ -136,5 +130,15 @@ if __name__ == "__main__":
                     field_aux = []
                 qnumber += 1
             output_dict[k] = page_dict
-        with open(f"./src/colpali/cl_results_{file_name.split('/')[-1]}.json", 'w') as f:
+        with open(f"{cfg['results']['save_path']}cl_results_{file_name.split('/')[-1]}.json", 'w') as f:
             json.dump(output_dict, f)
+
+
+if __name__ == "__main__":
+    os.chdir('/home/hackaton2025/ScienceHack/')
+
+    cfg_path = './src/cfg.json'
+    with open(cfg_path, 'r') as f:
+        cfg = json.load(f)
+    
+    postprocess(cfg)

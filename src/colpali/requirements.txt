@@ -1,3 +1,0 @@
-pip install pdf2image
-pip install git+https://github.com/illuin-tech/colpali # from source
-pip install --no-deps fast-plaid fastkmeans
