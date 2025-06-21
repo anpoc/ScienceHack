@@ -241,7 +241,7 @@ if __name__ == "__main__":
     
     ground_truth = [6, 4, 4, 4, 4, 2, 2, 7, 7, 7, 7, 0, 1, 10, 3, 9]
     
-    prediction = match_page_to_customers(pdf_file_path, customer_data_file_path, llm_extraction_json_path)
+    prediction = match_page_to_customers(pdf_file_path, customer_data_file_path, llm_extraction_json_path, verbose=True)
     
     
     print("Ground truth:", ground_truth)
