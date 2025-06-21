@@ -55,10 +55,3 @@ class JSONDataset(Dataset):
         embeddings = self.embedd_text(tokenized_text)
 
         return embeddings, label
-
-# Example usage
-
-
-if __name__ == "__main__":
-    dataset = JSONDataset()
-    dataset[1]

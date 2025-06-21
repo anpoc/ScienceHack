@@ -1,10 +1,9 @@
-import random
 from typing import List
 import fitz
 import torch
-from evaluation import evaluate
 from src.text_based_split.utils.utils import pdf_to_embeds
 from src.text_based_split.model import Classifier
+
 
 def predict(pdf_path: str, model = None) -> List[int]:
     """
@@ -37,6 +36,3 @@ def predict(pdf_path: str, model = None) -> List[int]:
 
     # Randomly choose 0 or 1 for each page
     return preds.tolist()
-
-if __name__ == "__main__":
-    x, accuracy, chunk_score = evaluate(predict, split="test", n=10)
