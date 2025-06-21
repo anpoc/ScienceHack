@@ -3,7 +3,7 @@ from typing import List
 from pypdf import PdfReader
 
 from evaluation import evaluate
-from manual_pdf import *
+from manuel.manual_pdf import *
 
 def predict(pdf_path: str) -> List[int]:
     """
