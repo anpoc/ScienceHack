@@ -4,6 +4,7 @@ import torch
 from .model import Classifier
 from .utils.utils import pdf_to_embeds
 
+
 def predict(pdf_path: str, model = None) -> List[int]:
     """
     Given the file path to a PDF, count its pages and return a random
