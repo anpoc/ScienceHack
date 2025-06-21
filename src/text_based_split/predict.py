@@ -32,10 +32,10 @@ def predict(pdf_path: str, model = None) -> List[int]:
         embeddings_batch.append(file2embeds.callback(idx))
     embeddings_batch = torch.stack(embeddings_batch).squeeze(dim=1)
     outputs = model(torch.tensor(embeddings_batch))
-    preds = (outputs >= 0.5).float()
+    #preds = (outputs >= 0.5).float()
 
     # Randomly choose 0 or 1 for each page
-    return preds.tolist()
+    return outputs
 
 if __name__ == "__main__":
     pass

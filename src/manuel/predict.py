@@ -28,11 +28,10 @@ def predict(pdf_path: str, model = None) -> List[int]:
     list_parameters = tuple_lists[1]
 
     outputs = model(torch.tensor(list_parameters, dtype=torch.float))
-    preds = (outputs >= 0.5).float()
+    #preds = (outputs >= 0.5).float()
 
     # Randomly choose 0 or 1 for each page
-    return preds.tolist()
-
+    return outputs
 if __name__ == "__main__":
     pass
     #exact_match, accuracy, chunk_score = evaluate(predict, split="test", n=100)
