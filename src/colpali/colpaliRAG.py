@@ -1,6 +1,6 @@
 from typing import Any
 
-from colpali_engine.models import ColQwen2
+from    .models import ColQwen2
 from transformers.models.qwen2_vl import Qwen2VLForConditionalGeneration
 
 

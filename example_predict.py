@@ -3,6 +3,7 @@ from typing import List
 from pypdf import PdfReader
 
 from evaluation import evaluate
+from manuel.manual_pdf import *
 
 def predict(pdf_path: str) -> List[int]:
     """
@@ -23,4 +24,5 @@ def predict(pdf_path: str) -> List[int]:
     return [random.randint(0, 1) for _ in range(num_pages)]
 
 if __name__ == "__main__":
-    evaluate(predict, split="test", n=10)
+    evaluate(manual_readPDF, split="test", n=100)
+    evaluate(manual_readPDF, split="train", n=100)
