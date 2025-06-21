@@ -199,8 +199,7 @@ main_page_types = {
                     "Cities":[cities,cities,True],
                     "Telefone":[telefon,telefon,True],
                     "Rechnungsnummer": [Address,Address,True],
-                    "strasse": [strasse,strasse,True],
-                    "Address": [Address,Address,True],                    
+                    "strasse": [strasse,strasse,True],                    
                    }
 
 if __name__ == "__main__":

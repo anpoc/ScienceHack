@@ -12,8 +12,8 @@ model_save_dir = "./src/manuel/ckpts"
 num_inputs = len(list(main_page_types.keys()))
 
 model = Classifier(input_dim=num_inputs, hidden_dim=num_inputs//2)
-criterion = nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+criterion = nn.BCELoss(reduction="none")
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
 
 best_accu = 0
 for epoch in range(1):
@@ -26,9 +26,10 @@ for epoch in range(1):
         tuple_lists = manual_4training_readPDF(pdf_path)
 
         list_parameters = tuple_lists[1]
-
+        optimizer.zero_grad()
         outputs = model(torch.tensor(list_parameters, dtype=torch.float))
-        loss = (criterion(outputs.float(), y_tensor.float()))
+        weights = torch.where(y_tensor == 1, torch.tensor(1), torch.tensor(1))
+        loss = ((criterion(outputs.float(), y_tensor.float()))*weights).mean()
         loss.backward()
         optimizer.step()
 
@@ -54,7 +55,7 @@ for epoch in range(1):
                 outputs_val = model(torch.tensor(list_parameters_val, dtype=torch.float))
                 preds_val = (outputs_val >= 0.5).float()
                 total_correct += (preds_val == y_tensor_val).sum().item()
-                total_samples += len(y_true)
+                total_samples += len(y_true_val)
             
             iter_accu = total_correct/total_samples
             print(f"iter: {idy} accuracy val: {iter_accu} \n")
