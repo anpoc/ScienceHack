@@ -113,7 +113,7 @@ def manual_readPDF(pdf_path: str)-> List[int]:
     lines2check = 80
     for page in doc: # iterate the document pages
         main_page = isthismainpage(page,main_page_types,lines2check)
-        print(main_page)
+        # print(main_page)
         if any(main_page):
             main_page_b = True
         else:
@@ -124,7 +124,27 @@ def manual_readPDF(pdf_path: str)-> List[int]:
     # print(pages_test)
     return pages_test
 
+def manual_4training_readPDF(pdf_path: str)-> List[int]:
+    assert pdf_path != ""
 
+    doc = pymupdf.open(pdf_path) # open a document
+    main_page = []
+    main_page_b = False
+    pages_test = []
+    NN_data = []
+    lines2check = 80
+    for page in doc: # iterate the document pages
+        main_page = isthismainpage(page,main_page_types,lines2check)
+        # print(main_page)
+        if any(main_page):
+            main_page_b = True
+        else:
+            main_page_b = False
+        pages_test.append(main_page_b)
+        NN_data.append(main_page)
+    pages_test=[int(b) for b in pages_test]
+    # print(pages_test)
+    return pages_test,NN_data
 
 
 
@@ -141,15 +161,13 @@ Datum_str = [r'\b\d{2}.\d{2}.\d{4}\b',
                 r'\b\d{2}/\d{2}/\d{2}\b']
 
 Time = ["Time", "Time: "]
-
-
-
+Time_str = [r'\b\d{2}:\d{2}:\d{2}\b']
 main_page_types = {
                    "Datum": [Datum, Datum_str,False],
-                   "Seite": [Seite,Seite,False],
-                "Bestell": [Bestell,Bestell,False],
-                "Lieferschein":[Lieferschein,Lieferschein,False],
-                   "Time": [["Time"], [r'\b\d{2}:\d{2}:\d{2}\b'],True],
+                   "Seite": [Seite,Seite,True],
+                    "Bestell": [Bestell,Bestell,True],
+                "Lieferschein":[Lieferschein,Lieferschein,True],
+                   "Time": [["Time"], Time_str,True],
                    "Address": [Address,Address,True]
                    }
 
@@ -157,12 +175,12 @@ if __name__ == "__main__":
     papath = "data/BECONEX_challenge_materials_samples/"
     pdfs = glob.glob(papath+"*.pdf")
     pdftouse = pdfs[0]
-    totest = manual_readPDF(pdftouse)
+    totest = manual_4training_readPDF(pdftouse)
 
     print("The results using '%s' is: "%pdftouse)
     print(totest)
 
-    print("The score wrt to Raul's list: {:.2f} %".format(compare_Raul()))
+    # print("The score wrt to Raul's list: {:.2f} %".format(compare_Raul()))
 
     # for tt in pdf_files:
     #     totest = manual_readPDF(tt)
