@@ -6,8 +6,12 @@
     "model": {
         "model_name": "vidore/colqwen2-v1.0",
         "text_queries": [
-            "Is this the start of a delivery note?",
-            "What is the delivery note number?"
+            "What is the delivery note number or Lieferschein Nr.?",
+            "What is the order number or Bestellung Nr.?",
+            "What is the date of this delivery order?",
+            "What is the vendor name?",
+            "What is the vendor name? Beconex is not a vendor.",
+            "What is the vendor's address?"
         ]
     }
 }
