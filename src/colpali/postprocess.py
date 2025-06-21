@@ -27,7 +27,7 @@ def standardize_date(date_str):
         return date_str
     
 
-def extract_after_keyword(text, keywords:str=[' is ', ' issued on ']):
+def extract_after_keyword(text, keywords:str=[' is ', ' issued on ', ' was dated ']):
     """
     Extracts the part of the string that comes after ' is ',
     strips whitespace, and removes a trailing period if present.
@@ -70,7 +70,9 @@ def get_mode_or_first(list_str:list, exclude:str=''):
     if most_common[0][1] > 1 or len(list_str) == 1:
         return most_common[0][0]
     else:
-        return list_str
+        if 'NA' in list_str:
+            list_str.remove('NA') 
+        return list_str if len(list_str) > 1 else list_str[0]
 
 
 if __name__ == "__main__":
@@ -111,14 +113,18 @@ if __name__ == "__main__":
                 elif qnumber == 3:
                     page_dict['Delivery Note Date'] =\
                         get_mode_or_first(field_aux)
-                    page_dict['MJAHR'] =\
-                        page_dict['Delivery Note Date'].split('-')[0]
+                    if isinstance(page_dict['Delivery Note Date'], list):
+                        page_dict['MJAHR'] = get_mode_or_first([
+                            x.split('-')[0] for x in page_dict['Delivery Note Date']
+                        ])
+                    else:
+                        page_dict['MJAHR'] =\
+                            page_dict['Delivery Note Date'].split('-')[0]
                     field_aux = []
                 elif qnumber == 7:
-                    page_dict['Vendor - Name 1'] =\
-                        get_mode_or_first(field_aux)
-                    if 'beconex' in page_dict['Vendor - Name 1'].lower():
-                        page_dict['Vendor - Name 1'] = 'NA'
+                    page_dict['Vendor - Name 1'] = get_mode_or_first([
+                        'NA' if 'beconex' in x.lower() else x for x in field_aux 
+                    ])
                     field_aux = []
                 elif qnumber == 9:
                     page_dict['Vendor - Address'] =\
@@ -132,4 +138,3 @@ if __name__ == "__main__":
             output_dict[k] = page_dict
         with open(f"./src/colpali/cl_results_{file_name.split('/')[-1]}.json", 'w') as f:
             json.dump(output_dict, f)
-        break
