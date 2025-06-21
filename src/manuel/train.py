@@ -13,10 +13,9 @@ num_inputs = len(list(main_page_types.keys()))
 
 model = Classifier(input_dim=num_inputs, hidden_dim=num_inputs//2)
 criterion = nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 best_accu = 0
-best_chunk = 0
 for epoch in range(1):
     ds = InvoiceBatchDataset("data", split="train", min_n=10, max_n=20, size=200)
     model.train()
@@ -57,7 +56,12 @@ for epoch in range(1):
                 total_correct += (preds_val == y_tensor_val).sum().item()
                 total_samples += len(y_true)
             
-            print(f"iter: {idy} accuracy val: {total_correct/total_samples} \n")
+            iter_accu = total_correct/total_samples
+            print(f"iter: {idy} accuracy val: {iter_accu} \n")
+            if best_accu < iter_accu:
+                best_accu = iter_accu
+                torch.save(model.state_dict(), os.path.join(model_save_dir, f"model_best_acc.pt"))
+
 
         
                 
