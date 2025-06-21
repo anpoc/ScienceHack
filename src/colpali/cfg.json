@@ -1,17 +1,36 @@
 {
     "data": {
-        "base_path": "./data/",
-        "file_name": "batch_1_2017_2018.pdf"
+        "base_path": "./data/BECONEX_challenge_materials_samples.zip",
+        "file_name": [
+            "BECONEX_challenge_materials_samples/batch_1_2017_2018.pdf",
+            "BECONEX_challenge_materials_samples/batch_2_2019_2020.pdf",
+            "BECONEX_challenge_materials_samples/batch_3_2021.pdf",
+            "BECONEX_challenge_materials_samples/batch_4_2022_1.pdf",
+            "BECONEX_challenge_materials_samples/batch_5_2022_2.pdf",
+            "BECONEX_challenge_materials_samples/batch_6_2023_1.pdf",
+            "BECONEX_challenge_materials_samples/batch_7_2023_2024.pdf"
+        ]
     },
     "model": {
         "model_name": "vidore/colqwen2-v1.0",
         "text_queries": [
-            "What is the delivery note number or Lieferschein Nr.?",
-            "What is the order number or Bestellung Nr.?",
-            "What is the date of this delivery order?",
-            "What is the vendor name?",
-            "What is the vendor name? Beconex is not a vendor.",
-            "What is the vendor's address?"
-        ]
+            "What is the delivery note number? If it is not found, return NA.",
+            "What is the delivery note number (Lieferscheinnummer) in this delivery order? Please return only the number. If no delivery note number is found, return NA.",
+            "What is the date of this delivery note? If it is not found, return NA.",
+            "What is the delivery note date (Lieferscheindatum) in this delivery note? Return only the date. If no date is found, return NA.",
+            "What is the vendor name in this delivery note? If it is not found, return NA.",
+            "What is the vendor name in this delivery note? Focus on the header of the document. If it is not found, return NA.",
+            "What is the vendor name in this delivery note? Focus on any logo at the header of the document. If it is not found, return NA.",
+            "What is the vendor name (Lieferant) in this delivery note? Return only the vendor's name. If not found, return NA.",
+            "What is the vendor address in this delivery note? If it is not found, return NA.",
+            "What is the vendor address (Lieferantenadresse) in this delivery note? Return only the address. If none is found, return NA.",
+            "What is the purchase order number in this delivery note? If it is not found, return NA.",
+            "What is the purchase order number (Bestellnummer) in this delivery note? Return only the number. If no purchase order number is found, return NA."
+        ],
+        "dnnum": [0, 1],
+        "date": [2, 3],
+        "vendor": [4, 5, 6, 7],
+        "address": [8, 9],
+        "order": [10, 11]
     }
 }
