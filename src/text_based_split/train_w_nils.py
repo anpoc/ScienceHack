@@ -15,7 +15,7 @@ model_save_dir = "./src/text_based_split/ckpts"
 
 model = Classifier()
 criterion = nn.BCELoss(reduction="none")
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
 
 best_accu = 0
 best_chunk = 0
@@ -45,7 +45,8 @@ for epoch in range(1):
         torch.save(model.state_dict(), os.path.join(model_save_dir, f"model_last.pt"))
         
         if idy %10 == 0:
-            acc, chunk_score = evaluate_during_training(predict, "test", 10, deepcopy(model))
+            old, acc, chunk_score = evaluate_during_training(predict, "test", 10, deepcopy(model))
+            print("\n", acc, chunk_score,"\n")
             if acc > best_accu:
                 best_accu = acc
                 torch.save(model.state_dict(), os.path.join(model_save_dir, f"model_best_acc.pt"))
