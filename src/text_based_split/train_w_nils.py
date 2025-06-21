@@ -30,6 +30,7 @@ for epoch in range(1):
             embeddings_batch.append(file2embeds.callback(idx))
         y_tensor = torch.tensor(y_true)
         embeddings_batch = torch.stack(embeddings_batch).squeeze(dim=1)
+        optimizer.zero_grad()
         outputs = model(torch.tensor(embeddings_batch))
         weights = torch.where(y_tensor == 1, torch.tensor(1), torch.tensor(1))
         loss = (criterion(outputs.float(), y_tensor.float())*weights).mean()

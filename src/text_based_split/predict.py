@@ -19,7 +19,7 @@ def predict(pdf_path: str, model = None) -> List[int]:
     """
     if model == None:
         model = Classifier()
-        model.load_state_dict(torch.load("./src/text_based_split/ckpts/model_last.pt"))
+        model.load_state_dict(torch.load("./src/text_based_split/ckpts/model_best_acc.pt"))
     model.eval()
     for param in model.parameters():
             param.requires_grad = False
@@ -39,4 +39,4 @@ def predict(pdf_path: str, model = None) -> List[int]:
     return preds.tolist()
 
 if __name__ == "__main__":
-    accuracy, chunk_score = evaluate(predict, split="test", n=10)
+    x, accuracy, chunk_score = evaluate(predict, split="test", n=10)
