@@ -1,0 +1,9 @@
+{
+    "data": {
+        "base_path": "../../data/BECONEX_challenge_materials_samples.zip",
+        "file_name": "BECONEX_challenge_materials_samples/batch_1_2017_2018.pdf"
+    },
+    "extras": {
+        "poppler": "C:/Users/andre/Downloads/Release-24.08.0-0/poppler-24.08.0/Library/bin"
+    }
+}
