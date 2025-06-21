@@ -10,7 +10,7 @@ import scipy
 
 import fitz
 
-def match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_path: str, vendor_data_file_path: str):
+def match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_path: str, vendor_data_file_path: str, verbose: bool = False):
     # for each chunk text try to regex the vendor name, if we find multiple matches return all of them,
     # then distance is only considered for those
 
@@ -58,15 +58,16 @@ def match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_
     #     possible_vendor_indices[i] = list(found_indices)
 
     # print possible vendor indices for each chunk
-    for i, indices in enumerate(possible_vendor_indices):
-        print(f"Page {i + 1}: Possible vendor indices: {indices}")
+    if verbose:
+        for i, indices in enumerate(possible_vendor_indices):
+            print(f"Page {i + 1}: Possible vendor indices: {indices}")
 
     return possible_vendor_indices
  
 
-def match_page_to_customers(pdf_file_path: str, vendor_data_file_path: str, llm_extraction_json_path: dict):
+def match_page_to_customers(pdf_file_path: str, vendor_data_file_path: str, llm_extraction_json_path: dict, verbose: bool = False) -> list:
 
-    possible_vendor_indices_by_page = match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_path, vendor_data_file_path)
+    possible_vendor_indices_by_page = match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_path, vendor_data_file_path, verbose=verbose)
     
     page_infos = []
     with open(llm_extraction_json_path, "r") as file:
@@ -175,10 +176,22 @@ def match_page_to_customers(pdf_file_path: str, vendor_data_file_path: str, llm_
     # compute confidences by using the inverse of the distance and applying a softmax function
     confidences = scipy.special.softmax(-dm, axis=1)
     predicted_confidences = confidences[np.arange(len(predictions)), predictions]
-    
-    print("Predictions for each page:")
-    for i, (pred, conf) in enumerate(zip(predictions, predicted_confidences)):
-        print(f"page {i + 1}: Vendor {pred + 1}, confidence {conf:4f} (Distance: {dm[i][pred]})")
+
+    # handle -1 in case no vendor name was found and all the extracted data is NA
+    for i, possible_vendor_indices in enumerate(possible_vendor_indices_by_page):
+        if len(possible_vendor_indices) == len(vendor_infos): # this means no vendor name was found with regex
+            extracted_date = page_infos[i]["date"]
+            order_number = page_infos[i]["order_number"]
+            delivery_number = page_infos[i]["delivery_number"]
+            vendor_name = page_infos[i]["vendor_name"]
+            vendor_address = page_infos[i]["vendor_address"]
+            
+            if extracted_date == 'NA' and order_number == 'NA' and delivery_number == 'NA' and vendor_name == 'NA' and vendor_address == 'NA':
+                predictions[i] = -1
+    if verbose:
+        print("Predictions for each page:")
+        for i, (pred, conf) in enumerate(zip(predictions, predicted_confidences)):
+            print(f"page {i + 1}: Vendor {pred + 1}, confidence {conf:4f} (Distance: {dm[i][pred]})")
         
     return predictions
 
