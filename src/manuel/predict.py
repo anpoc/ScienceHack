@@ -1,8 +1,7 @@
 from typing import List
-import fitz
 import torch
 from .model import Classifier
-from .utils.utils import pdf_to_embeds
+from .manual_pdf import *
 
 def predict(pdf_path: str, model = None) -> List[int]:
     """
@@ -16,21 +15,19 @@ def predict(pdf_path: str, model = None) -> List[int]:
         A list of integers (0 or 1), length == number of pages in the PDF.
     """
     if model == None:
-        model = Classifier()
-        model.load_state_dict(torch.load("./src/text_based_split/ckpts/model_best_acc.pt"))
+        num_inputs = len(list(main_page_types.keys()))
+        model = Classifier(input_dim=num_inputs, hidden_dim=num_inputs//2)
+        model.load_state_dict(torch.load("./src/manuel/ckpts/model_best_acc.pt"))
     model.eval()
     for param in model.parameters():
             param.requires_grad = False
     
     # Load the PDF with pypdf
-    pdf = fitz.open(pdf_path)
-    num_pages = len(pdf)
-    file2embeds=pdf_to_embeds(pdf_path)
-    embeddings_batch = []
-    for idx in range(num_pages):
-        embeddings_batch.append(file2embeds.callback(idx))
-    embeddings_batch = torch.stack(embeddings_batch).squeeze(dim=1)
-    outputs = model(torch.tensor(embeddings_batch))
+    tuple_lists = manual_4training_readPDF(pdf_path)
+
+    list_parameters = tuple_lists[1]
+
+    outputs = model(torch.tensor(list_parameters, dtype=torch.float))
     preds = (outputs >= 0.5).float()
 
     # Randomly choose 0 or 1 for each page
@@ -38,4 +35,4 @@ def predict(pdf_path: str, model = None) -> List[int]:
 
 if __name__ == "__main__":
     pass
-    #x, accuracy, chunk_score = evaluate(predict, split="test", n=10)
+    #exact_match, accuracy, chunk_score = evaluate(predict, split="test", n=100)
