@@ -1,0 +1,13 @@
+{
+    "data": {
+        "base_path": "./data/",
+        "file_name": "batch_1_2017_2018.pdf"
+    },
+    "model": {
+        "model_name": "vidore/colqwen2-v1.0",
+        "text_queries": [
+            "Is this the start of a delivery note?",
+            "What is the delivery note number?"
+        ]
+    }
+}
