@@ -76,20 +76,21 @@ def evaluate_predictions(
 
 def evaluate_during_training(predict: Callable, split: str = "train", n: int = 100, model = None) -> float:
     ds = InvoiceBatchDataset("data", split=split, min_n=5, max_n=15, size=n)
+
+    exact_matches = []
     accuracies = []
     chunk_scores = []
     for batch in tqdm(ds):
         pdf_path, y_true = batch
         y_pred = predict(pdf_path, model)
         scores = evaluate_predictions(y_true, y_pred)
-        accuracies.append(scores["accuracy"])
+        exact_matches.append(scores["exact_match"])
         chunk_scores.append(scores["chunk_score"])
-    accuracy = sum(accuracies) / len(accuracies)
+        accuracies.append(scores["accuracy"])
+    exact_match = sum(exact_matches) / len(exact_matches)
     chunk_score = sum(chunk_scores) / len(chunk_scores)
-    print(f"{split} results:")
-    print(f"accuracy: {accuracy:.2f}")
-    print(f"chunk score: {chunk_score:.2f}")
-    return accuracy, chunk_score
+    accuracy = sum(accuracies) / len(accuracies)
+    return exact_match, accuracy, chunk_score
 
 
 if __name__ == "__main__":
