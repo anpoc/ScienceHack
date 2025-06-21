@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": null,
+  "Delivery Note Number": null,
+  "Delivery Note Date": null,
+  "Vendor - Name 1": "Stefan Schrauber",
+  "Vendor - Name 2": "Fahrrad & mehr",
+  "Vendor - Address - Street": "Radweg",
+  "Vendor - Address - Number": "7",
+  "Vendor - Address - ZIP Code": "09876",
+  "Vendor - Address - City": "Beispielhausen",
+  "Vendor - Address - Country": null,
+  "Vendor - Address - Region": null
+}

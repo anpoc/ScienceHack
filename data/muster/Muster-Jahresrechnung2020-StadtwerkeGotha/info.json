@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": "500000 / 1000000",
+  "Delivery Note Number": "T20-000000",
+  "Delivery Note Date": "28.01.2021",
+  "Vendor - Name 1": "Max Mustermann",
+  "Vendor - Name 2": null,
+  "Vendor - Address - Street": "Musterstraße",
+  "Vendor - Address - Number": "1",
+  "Vendor - Address - ZIP Code": "99867",
+  "Vendor - Address - City": "Gotha",
+  "Vendor - Address - Country": null,
+  "Vendor - Address - Region": null
+}

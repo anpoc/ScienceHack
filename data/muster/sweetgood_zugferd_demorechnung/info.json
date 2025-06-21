@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": null,
+  "Delivery Note Number": null,
+  "Delivery Note Date": null,
+  "Vendor - Name 1": "Muster GmbH",
+  "Vendor - Name 2": "Max Mustermann",
+  "Vendor - Address - Street": "Musterstraße",
+  "Vendor - Address - Number": "17",
+  "Vendor - Address - ZIP Code": "654321",
+  "Vendor - Address - City": "Musterort",
+  "Vendor - Address - Country": "Deutschland",
+  "Vendor - Address - Region": null
+}

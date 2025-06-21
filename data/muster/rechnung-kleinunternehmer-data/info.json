@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": null,
+  "Delivery Note Number": null,
+  "Delivery Note Date": null,
+  "Vendor - Name 1": "Ernst Mustermann",
+  "Vendor - Name 2": null,
+  "Vendor - Address - Street": "Musterstr.",
+  "Vendor - Address - Number": "1",
+  "Vendor - Address - ZIP Code": "59487",
+  "Vendor - Address - City": "Niedrig",
+  "Vendor - Address - Country": null,
+  "Vendor - Address - Region": null
+}

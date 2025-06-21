@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": null,
+  "Delivery Note Number": null,
+  "Delivery Note Date": null,
+  "Vendor - Name 1": "Musterfirma",
+  "Vendor - Name 2": null,
+  "Vendor - Address - Street": "Musterallee",
+  "Vendor - Address - Number": "1",
+  "Vendor - Address - ZIP Code": "65432",
+  "Vendor - Address - City": "Musterstadt",
+  "Vendor - Address - Country": null,
+  "Vendor - Address - Region": null
+}

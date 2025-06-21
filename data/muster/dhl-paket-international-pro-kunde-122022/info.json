@@ -1,0 +1,13 @@
+{
+  "Purchase Order Number": null,
+  "Delivery Note Number": null,
+  "Delivery Note Date": null,
+  "Vendor - Name 1": "Deutsche Post AG",
+  "Vendor - Name 2": "Niederlassung BRIEF",
+  "Vendor - Address - Street": "Musterstraße",
+  "Vendor - Address - Number": "1",
+  "Vendor - Address - ZIP Code": "87654",
+  "Vendor - Address - City": "Musterstadt",
+  "Vendor - Address - Country": null,
+  "Vendor - Address - Region": null
+}
