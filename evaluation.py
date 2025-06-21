@@ -74,6 +74,25 @@ def evaluate_predictions(
         "accuracy": np.mean(np.array(y_true) == np.array(y_pred)),
     }
 
+def evaluate_during_training(predict: Callable, split: str = "train", n: int = 100, model = None) -> float:
+    ds = InvoiceBatchDataset("data", split=split, min_n=5, max_n=15, size=n)
+
+    exact_matches = []
+    accuracies = []
+    chunk_scores = []
+    for batch in tqdm(ds):
+        pdf_path, y_true = batch
+        y_pred = predict(pdf_path, model)
+        scores = evaluate_predictions(y_true, y_pred)
+        exact_matches.append(scores["exact_match"])
+        chunk_scores.append(scores["chunk_score"])
+        accuracies.append(scores["accuracy"])
+    exact_match = sum(exact_matches) / len(exact_matches)
+    chunk_score = sum(chunk_scores) / len(chunk_scores)
+    accuracy = sum(accuracies) / len(accuracies)
+    return exact_match, accuracy, chunk_score
+
+
 if __name__ == "__main__":
     y_t = [1,0,0,1,0,0,1,0]
     y_p = [1,0,1,0,0,0,1,0]

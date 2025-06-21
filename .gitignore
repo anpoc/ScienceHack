@@ -126,5 +126,8 @@ Thumbs.db
 desktop.ini
 
 .devcontainer
+/data_beco
+/.devcontainer
+/src/text_based_split/ckpts
+.devcontainer
 
-BECONEX_challenge_materials_samples/
