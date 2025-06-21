@@ -78,6 +78,8 @@ def match_page_to_customers(pdf_file_path: str, vendor_data_file_path: str, llm_
             delivery_number = page_data["Delivery Note Number"]
             date = page_data["Delivery Note Date"]
             if date != 'NA':
+                if isinstance(date, list):
+                    date = date[0]
                 date = datetime.strptime(page_data["Delivery Note Date"], "%Y-%m-%d").strftime("%d.%m.%Y")
             vendor_name = page_data["Vendor - Name 1"]
             vendor_address = page_data['Vendor - Address']
