@@ -13,7 +13,7 @@ num_inputs = len(list(main_page_types.keys()))
 
 model = Classifier(input_dim=num_inputs, hidden_dim=num_inputs//2)
 criterion = nn.BCELoss(reduction="none")
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-2)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 best_accu = 0
 for epoch in range(1):
@@ -28,7 +28,7 @@ for epoch in range(1):
         list_parameters = tuple_lists[1]
         optimizer.zero_grad()
         outputs = model(torch.tensor(list_parameters, dtype=torch.float))
-        weights = torch.where(y_tensor == 1, torch.tensor(1), torch.tensor(1))
+        weights = torch.where(y_tensor == 1, torch.tensor(1), torch.tensor(2))
         loss = ((criterion(outputs.float(), y_tensor.float()))*weights).mean()
         loss.backward()
         optimizer.step()
