@@ -1,0 +1,92 @@
+[
+    {
+        "page": 0,
+        "confidence": "high",
+        "MBLNR": 5049001109,
+        "MJAHR": 2021
+    },
+    {
+        "page": 1,
+        "confidence": "high",
+        "MBLNR": 5049001071,
+        "MJAHR": 2021
+    },
+    {
+        "page": 2,
+        "confidence": "high",
+        "MBLNR": 5049000984,
+        "MJAHR": 2021
+    },
+    {
+        "page": 3,
+        "confidence": "high",
+        "MBLNR": 5049001004,
+        "MJAHR": 2021
+    },
+    {
+        "page": 4,
+        "confidence": "high",
+        "MBLNR": 5049001059,
+        "MJAHR": 2021
+    },
+    {
+        "page": 5,
+        "confidence": "high",
+        "MBLNR": 5049001027,
+        "MJAHR": 2021
+    },
+    {
+        "page": 6,
+        "confidence": "medium",
+        "MBLNR": 5049001032,
+        "MJAHR": 2021
+    },
+    {
+        "page": 7,
+        "confidence": "medium",
+        "MBLNR": 5049001105,
+        "MJAHR": 2021
+    },
+    {
+        "page": 8,
+        "confidence": "medium",
+        "MBLNR": 5049001051,
+        "MJAHR": 2021
+    },
+    {
+        "page": 9,
+        "confidence": "medium",
+        "MBLNR": 5049001068,
+        "MJAHR": 2021
+    },
+    {
+        "page": 10,
+        "confidence": "high",
+        "MBLNR": 5049001086,
+        "MJAHR": 2021
+    },
+    {
+        "page": 11,
+        "confidence": "medium",
+        "MBLNR": 5049001075,
+        "MJAHR": 2021
+    },
+    {
+        "page": 12,
+        "confidence": "high",
+        "MBLNR": 5049001093,
+        "MJAHR": 2021
+    },
+    {
+        "page": 13,
+        "confidence": "medium",
+        "MBLNR": 5049000992,
+        "MJAHR": 2021
+    },
+    {
+        "page": 14,
+        "confidence": "medium",
+        "MBLNR": 5049000979,
+        "MJAHR": 2021
+    }
+]

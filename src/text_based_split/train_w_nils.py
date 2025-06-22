@@ -1,5 +1,5 @@
 from dataset import InvoiceBatchDataset
-from src.text_based_split.utils.utils import pdf_to_embeds
+from src.text_based_split.utils import pdf_to_embeds
 from src.text_based_split.model import Classifier
 from src.text_based_split.predict import predict
 from evaluation import evaluate_during_training

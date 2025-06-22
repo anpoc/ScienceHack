@@ -4,3 +4,5 @@ torch>=2.0.0
 numpy
 pymupdf
 transformers
+dateparser
+PyMuPDF

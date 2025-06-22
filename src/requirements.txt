@@ -7,3 +7,4 @@ numpy
 pymupdf
 transformers
 pdf2image
+python-Levenshtein
