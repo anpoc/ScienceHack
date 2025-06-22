@@ -2,13 +2,7 @@
     "data": {
         "base_path": "./data/BECONEX_challenge_materials_samples/",
         "file_name": [
-            "batch_1_2017_2018",
-            "batch_2_2019_2020",
-            "batch_3_2021",
-            "batch_4_2022_1",
-            "batch_5_2022_2",
-            "batch_6_2023_1",
-            "batch_7_2023_2024"
+            "batch_1_2017_2018"
         ],
         "records_file": "SAP_data.json"
     },
@@ -33,7 +27,7 @@
         "vendor": [4, 5, 6, 7],
         "address": [8, 9],
         "order": [10, 11],
-        "reprocess_flag": false
+        "reprocess_flag": true
     },
     "results": {
         "save_path": "./results/"

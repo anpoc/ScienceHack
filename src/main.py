@@ -37,7 +37,7 @@ def chunk_starts(chunk_ids, split_pred):
 
 
 if __name__ == "__main__":
-    os.chdir('/workspaces/ScienceHack/')
+    os.chdir('/home/hackaton2025/ScienceHack/')
     cfg_path = './src/cfg.json'
 
     with open(cfg_path, 'r') as f:
