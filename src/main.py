@@ -4,9 +4,10 @@ import json
 from colpali.process import extract_info
 from colpali.postprocess import postprocess
 from matching_stage.chunk_to_customer_matching import match_page_to_customers
+from predict_split import predict as predict_split
 
 
-def chunk_starts(chunk_ids):
+def chunk_starts(chunk_ids, split_pred):
     """
     Returns a list of (value, index) for each new chunk start,
     triggered when the number changes (ignoring -1s).
@@ -25,6 +26,8 @@ def chunk_starts(chunk_ids):
     result.append((current_value, 0))
     for idx in range(1, len(chunk_ids)):
         val = chunk_ids[idx]
+        if split_pred[idx] == 0:
+            continue
         if val == -1:
             continue
         if val != current_value:
@@ -55,8 +58,10 @@ if __name__ == "__main__":
             f"{cfg['results']['save_path']}cl_results_{file_name.split('/')[-1]}.json"
         ).tolist()
 
+        split_pred = predict_split(f'{cfg['data']['base_path']}{file_name}.pdf')
+        
         final_pred = []
-        for record_pos, pg_pos in chunk_starts(chunk_ids):
+        for record_pos, pg_pos in chunk_starts(chunk_ids, split_pred):
             final_pred.append({
                 'page': pg_pos,
                 'MBLNR': sap_records[record_pos]['MBLNR'],

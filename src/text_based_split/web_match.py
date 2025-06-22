@@ -2,8 +2,6 @@ from typing import List, Set
 import fitz
 import re
 
-from evaluation import evaluate
-
 
 def pdf_to_pages(path: str) -> List[str]:
     """Load a PDF and return a list of its pages’ text."""
@@ -49,7 +47,3 @@ def predict(pdf_path: str) -> List[int]:
             last_seen = current
 
     return result
-
-
-if __name__ == "__main__":
-    evaluate(predict, split="test", n=250)
