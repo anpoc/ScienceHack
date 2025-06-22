@@ -64,6 +64,7 @@ if __name__ == "__main__":
     file_name = args.pdf_path.split('/')[-1].split('.')[0]
     
     os.chdir('/workspaces/ScienceHack/')
+
     cfg_path = './src/cfg.json'
 
     with open(cfg_path, 'r') as f:
