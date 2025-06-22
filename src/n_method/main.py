@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 
 from matching import matching
 from predict_splits import predict as predict_split
@@ -16,7 +17,6 @@ Examples:
   python main_script.py -o results.json data/sample.pdf data/vendors.json
         """
     )
-    
     parser.add_argument(
         "pdf_path",
         type=str,
@@ -27,13 +27,6 @@ Examples:
         "json_path", 
         type=str,
         help="Path to the vendor data JSON file"
-    )
-    
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        default="results.json",
-        help="Output file path for results (default: results.json)"
     )
     
     args = parser.parse_args()
@@ -74,7 +67,9 @@ Examples:
                 "MBLNR": vendor_data[matching_results[i]]['MBLNR'],
                 "MJAHR": vendor_data[matching_results[i]]['MJAHR'],
             })
-    with open(f"output/{args.pdf_path.split('/')[-1].split('.')[0]}.json", "w") as file:
+    
+    os.makedirs(f"./results/n_method", exist_ok=True)
+    with open(f"./results/n_method/{args.pdf_path.split('/')[-1].split('.')[0]}.json", "w") as file:
         json.dump(records, file, indent=4)
 
 
