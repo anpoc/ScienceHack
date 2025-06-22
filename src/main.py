@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     file_name = args.pdf_path.split('/')[-1].split('.')[0]
     
-    os.chdir('/workspaces/ScienceHack/')
+    os.chdir('/home/hackaton2025/ScienceHack/')
 
     cfg_path = './src/cfg.json'
 

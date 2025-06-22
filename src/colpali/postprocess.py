@@ -4,6 +4,22 @@ from collections import Counter
 from dateutil import parser
 
 
+months_de_en = {
+    'Januar': 'January',
+    'Februar': 'February', 
+    'März': 'March',
+    'April': 'April', 
+    'Mai': 'May', 
+    'Juni': 'June', 
+    'Juli': 'July', 
+    'August': 'August', 
+    'September': 'September', 
+    'Oktober': 'October', 
+    'November': 'November',
+    'Dezember': 'December'
+}
+
+
 def standardize_date(date_str):
     """
     Converts various date formats to 'YYYY-MM-DD' format.
@@ -18,8 +34,9 @@ def standardize_date(date_str):
         ValueError: If the date string cannot be parsed.
     """
     try:
-        if date_str == '29. Juni 2017':
-            date_str = '29. June 2017'
+        for mde, men in months_de_en.items():
+            if mde in date_str:
+                date_str = date_str.replace(mde, men)
         parsed_date = parser.parse(date_str)
         return parsed_date.strftime("%Y-%m-%d")
     except (ValueError, TypeError) as e:
