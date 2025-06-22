@@ -1,0 +1,74 @@
+[
+    {
+        "page": 0,
+        "confidence": "high",
+        "MBLNR": 5049000823,
+        "MJAHR": 2018
+    },
+    {
+        "page": 1,
+        "confidence": "high",
+        "MBLNR": 5049000818,
+        "MJAHR": 2018
+    },
+    {
+        "page": 3,
+        "confidence": "high",
+        "MBLNR": 5049000806,
+        "MJAHR": 2018
+    },
+    {
+        "page": 5,
+        "confidence": "medium",
+        "MBLNR": 5049000798,
+        "MJAHR": 2017
+    },
+    {
+        "page": 7,
+        "confidence": "high",
+        "MBLNR": 5049000832,
+        "MJAHR": 2018
+    },
+    {
+        "page": 9,
+        "confidence": "high",
+        "MBLNR": 5049000841,
+        "MJAHR": 2018
+    },
+    {
+        "page": 10,
+        "confidence": "low",
+        "MBLNR": 5049000832,
+        "MJAHR": 2018
+    },
+    {
+        "page": 11,
+        "confidence": "high",
+        "MBLNR": 5049000775,
+        "MJAHR": 2017
+    },
+    {
+        "page": 12,
+        "confidence": "high",
+        "MBLNR": 5049000781,
+        "MJAHR": 2017
+    },
+    {
+        "page": 13,
+        "confidence": "high",
+        "MBLNR": 5049000858,
+        "MJAHR": 2018
+    },
+    {
+        "page": 14,
+        "confidence": "low",
+        "MBLNR": 5049000791,
+        "MJAHR": 2017
+    },
+    {
+        "page": 15,
+        "confidence": "medium",
+        "MBLNR": 5049000847,
+        "MJAHR": 2018
+    }
+]

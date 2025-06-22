@@ -1,6 +1,6 @@
-from id_match_rigid import predict as id_match_rigid_predict
-from large_texts import predict as large_texts_predict
-from page_number import predict as page_number_predict
+from nils_method.id_match_rigid import predict as id_match_rigid_predict
+from nils_method.large_texts import predict as large_texts_predict
+from nils_method.page_number import predict as page_number_predict
 
 
 def predict(pdf_path: str):

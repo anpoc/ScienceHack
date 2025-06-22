@@ -274,7 +274,7 @@ def match_page_to_customers(pdf_file_path: str, vendor_data_file_path: str, llm_
                 "delivery_number": vendor["Delivery Note Number"],
                 "date": datetime.strptime(vendor["Delivery Note Date"], "%Y-%m-%dT%H:%M:%S.%f").strftime("%d.%m.%Y"),
                 "name": vendor["Vendor - Name 1"],
-                "address": f"{vendor["Vendor - Address - Street"]} {vendor["Vendor - Address - Number"]}\n{vendor["Vendor - Address - ZIP Code"]} {vendor["Vendor - Address - City"]}\n{vendor["Vendor - Address - Country"]}",
+                "address": f'{vendor["Vendor - Address - Street"]} {vendor["Vendor - Address - Number"]}\n{vendor["Vendor - Address - ZIP Code"]} {vendor["Vendor - Address - City"]}\n{vendor["Vendor - Address - Country"]}',
             })
             
     # calculate distances between page infos and vendor infos in each "dimension" (date, name, address)

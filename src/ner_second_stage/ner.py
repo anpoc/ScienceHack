@@ -1,6 +1,7 @@
 from transformers import pipeline
 import fitz
 import json
+import os
 def process_page(ner, passage, data):
     results = ner(passage)
 
@@ -54,7 +55,7 @@ def dict_generator(sap_data, pred, page=-1):
     return dct
     
 
-def data_processor(sap_data_path, pdf_path, preds_stage_one):
+def data_processor(sap_data_path, pdf_path, preds_stage_one, output_name="out.json"):
     ner = pipeline("ner", grouped_entities=True, model="Davlan/bert-base-multilingual-cased-ner-hrl")
     with open(sap_data_path) as json_data:
             sap_data = json.load(json_data)
@@ -68,7 +69,8 @@ def data_processor(sap_data_path, pdf_path, preds_stage_one):
         pred = process_page(ner, passage, sap_data)
         if pred != -1:
             json_list.append(dict_generator(sap_data, pred, idx))
-    with open("out.json", "w") as json_file:
+    os.makedirs(f"./results/rl_method", exist_ok=True)
+    with open(os.path.join(f"./results/rl_method", output_name), "w") as json_file:
         json.dump(json_list, json_file, indent=4)
         
         

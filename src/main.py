@@ -4,7 +4,7 @@ import json
 from colpali.process import extract_info
 from colpali.postprocess import postprocess
 from matching_stage.chunk_to_customer_matching import match_page_to_customers
-from predict_split import predict as predict_split
+from nils_method.predict_splits import predict as predict_split
 
 
 def chunk_starts(chunk_ids, split_pred):
@@ -37,7 +37,7 @@ def chunk_starts(chunk_ids, split_pred):
 
 
 if __name__ == "__main__":
-    os.chdir('/home/hackaton2025/ScienceHack/')
+    os.chdir('/workspaces/ScienceHack/')
     cfg_path = './src/cfg.json'
 
     with open(cfg_path, 'r') as f:
@@ -53,12 +53,12 @@ if __name__ == "__main__":
     
     for file_name in cfg['data']['file_name']:
         chunk_ids = match_page_to_customers(
-            f'{cfg['data']['base_path']}{file_name}.pdf', 
-            f'{cfg['data']['base_path']}{cfg['data']['records_file']}',
+            f"{cfg['data']['base_path']}{file_name}.pdf", 
+            f"{cfg['data']['base_path']}{cfg['data']['records_file']}",
             f"{cfg['results']['save_path']}cl_results_{file_name.split('/')[-1]}.json"
         ).tolist()
 
-        split_pred = predict_split(f'{cfg['data']['base_path']}{file_name}.pdf')
+        split_pred = predict_split(f"{cfg['data']['base_path']}{file_name}.pdf")
         
         final_pred = []
         for record_pos, pg_pos in chunk_starts(chunk_ids, split_pred):
@@ -68,5 +68,5 @@ if __name__ == "__main__":
                 'MJAHR': sap_records[record_pos]['MJAHR']
             })
         
-        with open(f'{cfg['results']['save_path']}results_{file_name.split('/')[-1]}.json', 'w') as f:
+        with open(f"{cfg['results']['save_path']}results_{file_name.split('/')[-1]}.json", 'w') as f:
             json.dump(final_pred, f)

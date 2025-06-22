@@ -5,4 +5,5 @@ numpy
 pymupdf
 transformers
 pdf2image
+python-Levenshtein
 git+https://github.com/illuin-tech/colpali

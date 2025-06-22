@@ -2,8 +2,8 @@ import argparse
 import json
 import os
 
-from matching import matching
-from predict_splits import predict as predict_split
+from nils_method.matching import matching
+from nils_method.predict_splits import predict as predict_split
 
 
 def main():

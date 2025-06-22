@@ -2,7 +2,7 @@ from typing import List
 import fitz
 import torch
 from .model import Classifier
-from .utils.utils import pdf_to_embeds
+from .utils import pdf_to_embeds
 
 
 def predict(pdf_path: str, model = None) -> List[int]:
