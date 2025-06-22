@@ -1,4 +1,5 @@
 import json, os
+import argparse
 
 
 def start_identification(pred_dict, real_dict):
@@ -24,26 +25,26 @@ def info_match(pred_dict, real_dict, TP):
 
 
 if __name__ == "__main__":
-    os.chdir('/home/hackaton2025/ScienceHack/')
-    cfg_path = './src/cfg.json'
-
-    with open(cfg_path, 'r') as f:
-        cfg = json.load(f)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "pred_path",
+        type=str,
+        help="Path to the JSON file with predictions"
+    )
+    parser.add_argument(
+        "real_path", 
+        type=str,
+        help="Path to the JSON file with GT labels"
+    )
+    args = parser.parse_args()
     
-    for file_name in cfg['data']['file_name']:
-        with open(
-            f"{cfg['data']['base_path']}output_{file_name}.json", 'r'
-        ) as f:
-            pred_dict = json.load(f)
-        with open(
-            f"{cfg['results']['save_path']}results_{file_name}.json", 'r'
-        ) as f:
-            real_dict = json.load(f)
-        
-        TP, FP, FN = start_identification(pred_dict, real_dict)
-        match, nomatch = info_match(pred_dict, real_dict, TP)
-        print(f'Results for {file_name}\n')
-        print(f'-- Start detection performance: {len(TP)} (TP), {len(FP)} (FP), {len(FN)} (FN)\n')
-        print(
-            f'-- Delivery note info extraction: {round(match / (match + nomatch), 4) * 100}%\n'
-        )
+    with open(args.pred_path, 'r') as f:
+        pred_dict = json.load(f)
+    with open(args.real_path, 'r') as f:
+        real_dict = json.load(f)
+    
+    TP, FP, FN = start_identification(pred_dict, real_dict)
+    match, nomatch = info_match(pred_dict, real_dict, TP)
+    print(f'Results for {args.pred_path}\n')
+    print(f'-- Start detection performance: {len(TP)} (TP), {len(FP)} (FP), {len(FN)} (FN)\n')
+    print(f'-- Delivery note info extraction: {round(match / (match + nomatch), 4) * 100}%\n')
