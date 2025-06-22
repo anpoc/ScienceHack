@@ -2,13 +2,174 @@ from datetime import datetime
 import json
 import math
 import numpy as np
-from pypdf import PdfReader
-from transformers import pipeline
+import dateparser
 import re
 import Levenshtein
 import scipy
 
 import fitz
+
+
+def get_dates(text: str):
+    pattern = r"""(?x)               # free-spacing mode
+    (?<!\d)                        # no digit before
+    (?:
+        # 31-day months
+        (?:
+        (?:0?[1-9]|[12]\d)|3[01]
+        )\s?[./:-][\s.]?
+        (?:0?[13578]|1[02]
+        |J(?:an(?:uar)?|uli?)
+        |M(?:ärz?|ai)
+        |Aug(?:ust)?
+        |Okt(?:ober)?
+        |Dez(?:ember)?
+        )\s?(?:[./:-][\s.]?)?
+        [1-9]\d\d\d
+
+        | # 30-day months
+        (?:
+        (?:0?[1-9]|[12]\d)|30
+        )\s?[./:-][\s.]?
+        (?:0?[13-9]|1[012]
+        |J(?:an(?:uar)?|u[nl]i?)
+        |M(?:ärz?|ai)
+        |A(?:pr(?:il)?|ug(?:ust)?)
+        |Sep(?:tember)?
+        |Okt(?:ober)?
+        |(?:Nov|Dez)(?:ember)?
+        )\s?(?:[./:-][\s.]?)?
+        [1-9]\d\d\d
+
+        | # February 29 on leap years
+        (?:0?[1-9]|[12]\d)\s?[./:-][\s.]?
+        (?:0?2|Fe(?:b(?:ruar)?)?)\s?(?:[./:-][\s.]?)?
+        [1-9]\d
+        (?:[02468][048]|[13579][26])
+
+        | # February other days
+        (?:0?[1-9]|[12][0-8])\s?[./:-][\s.]?
+        (?:0?2|Fe(?:b(?:ruar)?)?)\s?(?:[./:-][\s.]?)?
+        [1-9]\d\d\d
+    )
+    (?!\d)                        # no digit after
+    """
+    date_regex = re.compile(pattern, re.VERBOSE | re.IGNORECASE)
+    matches = date_regex.findall(text)
+    dates = []
+    for d in matches:
+        if not d:
+            continue
+        parsed = dateparser.parse(d, languages=['de'])
+        if parsed:
+            dates.append(parsed.strftime('%Y-%m-%d'))
+    return dates
+
+
+def nils_match(pdf_file_path: str, vendor_json_path: str):
+    doc = fitz.open(pdf_file_path)
+    my_matches = []
+
+    purchase_orders = {}
+    delivery_notes = {}
+    dates = {}
+    vendors = {}
+    street_numbers = {}
+    street_names = {}
+    zip_codes = {}
+    cities = {}
+
+    with open(vendor_json_path, "r") as file:
+        vendor_data = json.load(file)
+        for i, vendor in enumerate(vendor_data):
+            purchase_orders[i] = str(vendor['Purchase Order Number'])
+            delivery_notes[i] = str(vendor['Delivery Note Number'])
+            raw_date = vendor['Delivery Note Date']
+            clean_date = dateparser.parse(raw_date).strftime('%Y-%m-%d')
+            dates[i] = clean_date
+            vendors[i] = str(vendor['Vendor - Name 1'])
+            street_numbers[i] = str(vendor['Vendor - Address - Number'])
+            street_names[i] = vendor['Vendor - Address - Street']
+            zip_codes[i] = str(vendor['Vendor - Address - ZIP Code'])
+            cities[i] = vendor['Vendor - Address - City']
+    
+    for k in range(len(doc)):
+        score = {i: 0 for i in range(len(vendor_data))}
+        page = doc.load_page(k)
+        text = page.get_text()
+
+        generic_pattern = re.compile(r'\b[A-Za-z0-9]+(?:[ _\/-][A-Za-z0-9]+)*\b')
+        matches = generic_pattern.findall(text)
+        filtered_matches = []
+        for match in matches:
+            if len(match) < 4:
+                continue
+            if any(char.isdigit() for char in match):
+                filtered_matches.append(match)
+            elif any(char.isupper() for char in match[1:]):
+                filtered_matches.append(match)
+        for match in filtered_matches:
+            for i, delivery_note in delivery_notes.items():
+                if match.lower().replace(" ", "").replace("-", "").replace("/", "") == delivery_note.lower().replace(" ", "").replace("-", "").replace("/", ""):
+                    score[i] += 3
+                    break
+        generic_pattern = re.compile(r'[0-9]{5,}')
+        matches = generic_pattern.findall(text)
+        for match in filtered_matches:  
+            for i, purchase_order in purchase_orders.items(): 
+                if match == purchase_order:
+                    score[i] += 4
+                    break
+
+        # match dates
+        dates_on_page = get_dates(text)
+        for date in dates_on_page:
+            for i, vendor_date in dates.items():
+                if date == vendor_date:
+                    score[i] += 2
+                    break
+
+        
+        postal_pattern = re.compile(r'(?<!\d)\d{5}(?!\d)')
+        postal_matches = postal_pattern.findall(text)
+        for i, vendor_zip_code in zip_codes.items():
+            for postal_match in postal_matches:
+                if postal_match == vendor_zip_code:
+                    score[i] += 1
+                    break
+
+        for i, city in cities.items():
+            if city in text:
+                score[i] += 1
+
+        for i, vendor_name in vendors.items():
+            words = vendor_name.split()
+            n = len(words)
+            count = 0
+            for word in words:
+                if word.lower() in text.lower():
+                    count += 1
+            if count >= n * 0.75:
+                score[i] += 0.5
+        
+        # get the vendor with the highest score
+        max_score = max(score.values())
+        max_score_vendor = max(score, key=score.get)
+        print(f"Page {k + 1}: Vendor {max_score_vendor + 1}, score {max_score}")
+        my_matches.append(max_score_vendor)
+        # print vendor name and date from vendor data
+        print(f"Vendor {vendor_data[max_score_vendor]['Vendor - Name 1']}, date {vendor_data[max_score_vendor]['Delivery Note Date']}")
+
+    
+    return my_matches
+
+if __name__ == "__main__":
+    pdf_file_path = "data/BECONEX_challenge_materials_samples/batch_1_2017_2018.pdf"
+    vendor_json_path = "data/BECONEX_challenge_materials_samples/SAP_data.json"
+    matches = nils_match(pdf_file_path, vendor_json_path)
+    print(matches)
+        
+
 
 def match_with_vendor_name_and_order_number_and_delivery_numnber_regex(pdf_file_path: str, vendor_data_file_path: str, verbose: bool = False):
     # for each chunk text try to regex the vendor name, if we find multiple matches return all of them,
