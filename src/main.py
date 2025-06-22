@@ -42,15 +42,18 @@ if __name__ == "__main__":
     with open(f"{cfg['data']['base_path']}{cfg['data']['records_file']}", 'r') as f:
         sap_records = json.load(f)
 
-    extract_info(cfg)
-    postprocess(cfg)
+    if cfg['model']['reprocess_flag'] or not os.path.exists(
+        f"{cfg['results']['save_path']}cl_results_{cfg['data']['file_name'][0].split('/')[-1]}.json"
+    ):
+        extract_info(cfg)
+        postprocess(cfg)
     
     for file_name in cfg['data']['file_name']:
         chunk_ids = match_page_to_customers(
             f'{cfg['data']['base_path']}{file_name}.pdf', 
             f'{cfg['data']['base_path']}{cfg['data']['records_file']}',
             f"{cfg['results']['save_path']}cl_results_{file_name.split('/')[-1]}.json"
-        )
+        ).tolist()
 
         final_pred = []
         for record_pos, pg_pos in chunk_starts(chunk_ids):

@@ -12,7 +12,7 @@ from peft import LoraConfig
 from transformers.utils.import_utils import is_flash_attn_2_available
 from transformers.models.qwen2_vl import Qwen2VLProcessor
 
-from colpaliRAG import ColQwen2ForRAG
+from colpali.colpaliRAG import ColQwen2ForRAG
 
 
 def read_zip(base_path:str, file_name:str):
@@ -41,6 +41,8 @@ def scale_image(image: Image.Image, new_height:int=1024) -> Image.Image:
 
 
 def extract_info(cfg):
+    device = get_torch_device('auto')
+
     # Get the LoRA config from the pretrained retrieval model
     model_name = cfg['model']['model_name']
     lora_config = LoraConfig.from_pretrained(model_name)
@@ -75,26 +77,26 @@ def extract_info(cfg):
         
         # Preprocess the inputs
         output_dict = {}
-        conversation = [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                    },
-                    {
-                        "type": "text",
-                        "text": f"Answer the following question using the input image: {query}",
-                    },
-                ],
-            }
-        ]
-        text_prompt = processor.apply_chat_template(
-            conversation, add_generation_prompt=True
-        )
         for id_img, img in enumerate(images):
             output_dict[id_img] = {}
             for query in tqdm(cfg['model']['text_queries']):
+                conversation = [
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "image",
+                            },
+                            {
+                                "type": "text",
+                                "text": f"Answer the following question using the input image: {query}",
+                            },
+                        ],
+                    }
+                ]
+                text_prompt = processor.apply_chat_template(
+                    conversation, add_generation_prompt=True
+                )
                 inputs_generation = processor(
                     text=[text_prompt],
                     images=[img],
