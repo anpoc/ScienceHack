@@ -22,8 +22,8 @@ def read_zip(base_path:str, file_name:str):
     return images
 
 
-def read_folder(base_path:str, file_name:str):
-    images = convert_from_path(f'{base_path}{file_name}')
+def read_file(pdf_file):
+    images = convert_from_path(pdf_file)
     return images
 
 
@@ -40,7 +40,7 @@ def scale_image(image: Image.Image, new_height:int=1024) -> Image.Image:
     return scaled_image
 
 
-def extract_info(cfg):
+def extract_info(cfg, pdf_file:str):
     device = get_torch_device('auto')
 
     # Get the LoRA config from the pretrained retrieval model
@@ -68,61 +68,57 @@ def extract_info(cfg):
         ),
     )
 
-    for file_name in cfg['data']['file_name']:
-        # Get images
-        if cfg['data']['base_path'].endswith('zip'):
-            images = read_zip(cfg['data']['base_path'], f'{file_name}.pdf')
-        else:
-            images = read_folder(cfg['data']['base_path'], f'{file_name}.pdf')
-        
-        # Preprocess the inputs
-        output_dict = {}
-        for id_img, img in enumerate(images):
-            output_dict[id_img] = {}
-            for query in tqdm(cfg['model']['text_queries']):
-                conversation = [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "image",
-                            },
-                            {
-                                "type": "text",
-                                "text": f"Answer the following question using the input image: {query}",
-                            },
-                        ],
-                    }
-                ]
-                text_prompt = processor.apply_chat_template(
-                    conversation, add_generation_prompt=True
-                )
-                inputs_generation = processor(
-                    text=[text_prompt],
-                    images=[img],
-                    padding=True,
-                    return_tensors="pt",
-                ).to(device)
+    file_name = pdf_file.split('/')[-1].split('.')[0]
+    images = read_file(pdf_file)
+    
+    # Preprocess the inputs
+    output_dict = {}
+    for id_img, img in enumerate(images):
+        output_dict[id_img] = {}
+        for query in tqdm(cfg['model']['text_queries']):
+            conversation = [
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                        },
+                        {
+                            "type": "text",
+                            "text": f"Answer the following question using the input image: {query}",
+                        },
+                    ],
+                }
+            ]
+            text_prompt = processor.apply_chat_template(
+                conversation, add_generation_prompt=True
+            )
+            inputs_generation = processor(
+                text=[text_prompt],
+                images=[img],
+                padding=True,
+                return_tensors="pt",
+            ).to(device)
 
-                # Generate the RAG response
-                model.enable_generation()
-                output_ids = model.generate(
-                    **inputs_generation, max_new_tokens=128
-                )
+            # Generate the RAG response
+            model.enable_generation()
+            output_ids = model.generate(
+                **inputs_generation, max_new_tokens=128
+            )
 
-                # Ensure that only the newly generated token IDs are retained from output_ids
-                generated_ids = [output_ids[len(input_ids) :] for input_ids, output_ids in zip(inputs_generation.input_ids, output_ids)]
+            # Ensure that only the newly generated token IDs are retained from output_ids
+            generated_ids = [output_ids[len(input_ids) :] for input_ids, output_ids in zip(inputs_generation.input_ids, output_ids)]
 
-                # Decode the RAG response
-                output_text = processor.batch_decode(
-                    generated_ids,
-                    skip_special_tokens=True,
-                    clean_up_tokenization_spaces=True,
-                )
-                output_dict[id_img][query] = output_text
-        
-        with open(f"{cfg['results']['save_path']}tmp_results_{file_name.split('/')[-1]}.json", 'w') as f:
-            json.dump(output_dict, f)
+            # Decode the RAG response
+            output_text = processor.batch_decode(
+                generated_ids,
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=True,
+            )
+            output_dict[id_img][query] = output_text
+    
+    with open(f"{cfg['results']['save_path']}tmp_results_{file_name.split('/')[-1]}.json", 'w') as f:
+        json.dump(output_dict, f)
 
 
 if __name__ == "__main__":

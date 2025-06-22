@@ -1,9 +1,0 @@
-pypdf>=3.10.0
-tqdm>=4.65.0
-torch>=2.0.0
-numpy
-pymupdf
-transformers
-pdf2image
-python-Levenshtein
-git+https://github.com/illuin-tech/colpali
